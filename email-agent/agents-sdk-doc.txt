@@ -1,0 +1,397 @@
+
+/
+Playground
+Dashboard
+Docs
+API reference
+
+Agents SDK
+Learn how to build agents with the OpenAI.
+Welcome to the OpenAI Agents SDK. This library makes it straightforward to build agentic applications—where a Large Language Model (LLM) can leverage additional context and tools, possibly hand off to other specialized agents, stream partial results, and keep a full trace of what happened.
+
+Below is a thorough overview. By the end of this guide, you’ll have a strong understanding of core concepts, best practices, and how to assemble everything in a well-structured agent workflow.
+
+Download and installation
+Access the latest version of the Agents SDK here on GitHub.
+
+Quick Links
+Key Concepts
+Agents
+Tools
+Context
+Output Types
+Handoffs
+Streaming
+Tracing
+Guardrails
+Putting It All Together
+Best Practices
+Next Steps
+Key Concepts
+The Agents SDK is designed around these core primitives:
+
+Component	Purpose
+Agent	An LLM configured with instructions, tools, handoffs, guardrails, etc.
+Tool	Functions the agent can call for external help (e.g., APIs, calculations, file access).
+Context	A (mutable) object you create and pass along, storing state or shared resources.
+Output Types	Allows you to specify structured final outputs (or default to free-form text).
+Handoffs	Mechanism for delegating or switching the conversation to a different agent.
+Streaming	Emits partial/delta output events as the agent thinks or calls tools (useful for real-time UIs).
+Tracing	Automatically captures a detailed trace of each “agentic run” for debugging, analytics, or record-keeping.
+Guardrails	Validate inputs or outputs, check policy, or halt execution if something is off-limits.
+Bringing these together, you can create powerful multi-step or conversational workflows, ensuring correct, verifiable results—and if needed, break down tasks or call specialized sub-agents with guardrails, streaming, or structured outputs.
+
+Agents
+Agents encapsulate Large Language Models (LLMs) along with all necessary configuration, such as system prompts, available tools, and handoff targets. They can also include guardrails for input or output validation, plus advanced model settings.
+
+Core Idea
+An Agent is essentially an LLM with:
+
+Instructions (like system prompts or dynamic instructions)
+Tools it can call
+Handoffs (delegation to other agents)
+Optional guardrails for inputs or outputs
+Additional settings (e.g. model parameters, output type, hooks)
+When you invoke an agent with user input, it runs an agent loop:
+
+The agent sees the conversation so far (including user input, previous tool results, system messages).
+The LLM decides to:
+Produce a final answer (ending the loop),
+Call a tool (possibly multiple times in sequence),
+Or hand off to another agent.
+Once the agent produces a final answer (or hands off), the loop ends.
+Example: Basic Agent
+from agents import Agent, AgentRunner
+
+agent = Agent(
+name="basic_agent",
+instructions="You are a helpful agent."
+)
+
+result = await AgentRunner.run(agent, ["What's the capital of the USA?"])
+print(result.agent_output)
+# The capital of the United States is Washington, D.C.
+Agent Fields
+name: Short identifier for the agent.
+instructions or instructions_function:
+instructions: A static string describing how the agent should respond.
+instructions_function: A function returning a string (for dynamic instructions).
+description: Explains the agent’s role (often shown if this agent is used as a sub-agent/tool).
+tools: A list of external functions (Tools) the agent can call.
+handoffs: A list of possible handoff targets or sub-agents.
+model_settings: Parameters for LLM usage (model type, temperature, etc.).
+output_type: By default, final output is a string. You can require structured output instead.
+context_type: Sets a Python type for your context object (see Context).
+Creating or Cloning Agents
+from agents import Agent
+
+# Basic
+my_agent = Agent(
+    name="my_agent",
+    instructions="You are extremely friendly and helpful."
+)
+
+# Cloning with modifications
+new_agent = my_agent.clone(
+    name="my_new_agent",
+    instructions="Now you're more formal."
+)
+The Agent Loop
+When you do:
+
+final_result = await AgentRunner.run(agent, ["some user input"])
+Under the hood:
+
+The LLM sees the conversation (including user input, system messages, prior tool outputs).
+The LLM might produce a final user-facing message or call a tool or trigger a handoff.
+If it calls a tool, the result is fed back into the conversation. The process repeats until a final message or handoff is reached.
+If using a structured output type (e.g., a Pydantic model), the agent must call a special final_output tool to produce valid JSON. If the JSON is invalid, you’ll see a ModelBehaviorError.
+The framework enforces a max_turns safety measure to prevent infinite loops.
+Tools
+Tools let agents invoke external functions (e.g., for accessing APIs, running code, performing searches). By exposing a Python function as a tool, the LLM can decide at runtime to call it with arguments, see results, and use that to inform the next step.
+
+Defining Tools
+You define tools with the @function_tool decorator (or function_tool(...)):
+
+Define a weather retrieval tool
+from agents.tool import function_tool
+
+@function_tool
+def get_weather(location: str, unit: str = "C") -> str:
+  """
+  Fetch the weather for a given location, returning a short description.
+  """
+  # Example logic
+  return f"The weather in {location} is 22 degrees {unit}."
+Attach it to an agent:
+
+agent.tools.append(get_weather)
+Tools can be synchronous or asynchronous.
+You can optionally take a typed context as the first argument (see next section).
+The agent sees each tool by name and can call it with valid JSON arguments.
+Common Patterns:
+
+Tools for math, web requests, data lookups, specialized computations, etc.
+Tools can log or store data in your system if needed.
+If you have many tools, consider distinct instructions to guide the LLM on how to choose them.
+Context
+Sometimes you need to keep session data, credentials, or ephemeral state across multiple tool calls or steps. The Agents SDK allows a context object to be passed into the run.
+
+You create any Python class as context, or use a typed approach with Agent(context_type=MyContext).
+Tools can then access that context, read data, and update it.
+Using Context for User Sessions
+from agents.run_context import AgentContextWrapper
+from agents.tool import function_tool
+
+class MyContext:
+  def __init__(self, user_id: str):
+      self.user_id = user_id
+      self.seen_messages = []
+
+@function_tool
+def greet_user(context: AgentContextWrapper[MyContext], greeting: str) -> str:
+  user_id = context.agent_context.user_id
+  return f"Hello {user_id}, you said: {greeting}"
+
+agent = Agent(
+  name="my_agent_with_context",
+  context_type=MyContext,
+  tools=[greet_user],
+)
+
+my_ctx = MyContext(user_id="alice")
+result = await AgentRunner.run(
+  agent,
+  input=["Hi agent!"],
+  context=my_ctx,
+)
+Here, the greet_user tool can access context.agent_context.user_id. You can store state, counters, or other shared resources. This pattern is invaluable for multi-step reasoning or advanced logic within tool calls.
+
+Output Types
+Agents can produce free-form text (the default) or structured outputs.
+
+Default (String) Output
+By default, an agent’s final answer is simply the next text message produced without calling a tool. Once the agent returns that text, the run ends.
+
+agent = Agent(
+    name="StringOutputAgent",
+    instructions="Always provide final answers as text, never a tool."
+)
+out = await AgentRunner.run(agent, ["Summarize thermodynamics"])
+print(out.agent_output)
+# "Thermodynamics is the study of heat, energy, and work..."
+Structured Outputs
+Setting output_type forces the agent to produce a JSON object that matches a Python (often Pydantic) schema. The LLM calls a special final_output tool, which validates the JSON.
+
+Structured output with Pydantic
+from pydantic import BaseModel
+from agents import Agent, AgentRunner
+
+class WeatherAnswer(BaseModel):
+  location: str
+  temperature_c: float
+  summary: str
+
+agent = Agent(
+  name="StructuredWeatherAgent",
+  instructions="Use the final_output tool with WeatherAnswer schema.",
+  output_type=WeatherAnswer,
+)
+
+out = await AgentRunner.run(agent, ["What's the temperature in Paris?"])
+print(type(out.agent_output))
+# <class '__main__.WeatherAnswer'>
+print(out.agent_output.temperature_c)
+# e.g. 22.0
+If the LLM returns malformed JSON, the run errors out, ensuring your final data is guaranteed valid.
+
+Handoffs
+Handoffs let one agent delegate a conversation to another agent. This is useful when you have multiple specialized agents (e.g., a “Spanish-only” agent vs. “English-only” agent) or domain-specific agents (tech support vs. billing).
+
+High-Level Flow
+A parent (or “triage”) agent can see multiple sub-agent handoff targets.
+The parent decides to invoke a “handoff tool” referencing a specific sub-agent.
+The SDK switches to that sub-agent for subsequent steps until it finishes or delegates again.
+Handoff example
+from agents import Agent, AgentRunner, handoff
+
+spanish_agent = Agent(name="spanish_agent", instructions="You only speak Spanish.")
+english_agent = Agent(name="english_agent", instructions="You only speak English.")
+
+triage_agent = Agent(
+  name="triage_agent",
+  instructions="Handoff to the appropriate agent based on language.",
+  handoffs=[spanish_agent, english_agent],
+)
+
+out = await AgentRunner.run(triage_agent, ["Hola, ¿cómo estás?"])
+# The conversation is handed off to spanish_agent.
+# Final answer will be in Spanish.
+Behind the scenes:
+
+Each sub-agent is wrapped in a handoff(...) object, which exposes a tool like "handoff_spanish_agent".
+If the parent agent calls that tool, the SDK shifts the active agent to spanish_agent.
+Handoff Input and Filters
+You can define arguments for the new agent, or filter conversation history passed along. For example, limiting how much context the sub-agent sees or storing info in your own callback.
+
+Streaming
+Streaming is used when you want partial or incremental output (like a real-time chat experience). Instead of AgentRunner.run(...), call AgentRunner.run_streamed(...) to get an async iterator of events.
+
+Streaming mode example
+from agents import Agent, AgentRunner
+
+stream = AgentRunner.run_streamed(agent, ["Tell me a story"])
+
+async for event in stream.stream_events():
+  # event.delta often includes partial text or function call info
+  print(event.delta, end="", flush=True)
+print("\n--- done ---")
+Events could include:
+
+Partial text responses
+Tool call argument deltas
+Indications that a final answer was produced
+The agent can still call multiple tools, produce partial messages, or do a handoff while streaming.
+
+Tracing
+Tracing automatically records each step of an agent’s run: user messages, system prompts, tool calls, function call inputs and outputs, plus final responses. This is invaluable for debugging, analytics, or storing conversation transcripts.
+
+By default, the SDK does trace(name="agent_run") whenever you call AgentRunner.run(...).
+You can customize or disable it with AgentRunConfig or environment variables like:
+LLM_DEBUG=true
+AGENT_LIFECYCLE=true
+TOOL_DEBUG=true
+If you need to store or process traces yourself, implement a custom TracingProcessor and register it via add_trace_processor or set_trace_processors([...]).
+
+Example configuration:
+
+from agents import AgentRunner, AgentRunConfig
+
+config = AgentRunConfig(
+    run_name="CustomerSupportFlow",
+    tracing_disabled=False,
+    trace_non_openai_generations=True,
+)
+
+result = await AgentRunner.run(my_agent, ["Hello?"], run_config=config)
+Guardrails
+Guardrails let you enforce policies on agent inputs or outputs, such as blocking disallowed content or verifying data integrity. If a guardrail fails, the run can end immediately or raise an exception.
+
+Configuring Guardrails
+from agents.guardrails import CustomGuardrail
+
+async def is_not_swearing(msgs, context) -> bool:
+    content = " ".join(m["content"] for m in msgs if "content" in m)
+    return "badword" not in content.lower()
+
+my_guardrail = CustomGuardrail(
+    guardrail_function=is_not_swearing,
+    tripwire_config=lambda output: not output  # if 'False', raise error
+)
+
+agent = Agent(
+    name="my_agent",
+    input_guardrails=[my_guardrail]
+)
+
+out = await AgentRunner.run(agent, ["some text"])
+# If "badword" is in input, GuardrailTripwireTriggered is raised.
+You can also run LLM-based guardrails that apply an AI-driven policy check. Guardrails can be placed on input, output, or intermediate steps, depending on your usage.
+
+Putting It All Together
+Below is a conceptual snippet demonstrating multiple features: instructions, tools, handoffs, structured output, and run config. You can also apply streaming or tracing as desired.
+
+Multi-agent workflow example
+from agents import Agent, AgentRunner, AgentRunConfig, handoff
+from agents.tool import function_tool
+from pydantic import BaseModel
+
+class StructuredAnswer(BaseModel):
+  decision: str
+  reasoning: str
+
+@function_tool
+def get_forecast(city: str) -> str:
+  return f"The forecast in {city} is sunny."
+
+spanish_agent = Agent(name="spanish_agent", instructions="You only speak Spanish.")
+english_agent = Agent(name="english_agent", instructions="You only speak English.")
+
+triage_agent = Agent(
+  name="triage_agent",
+  instructions="Switch to Spanish if user uses Spanish, otherwise English.",
+  tools=[get_forecast],
+  handoffs=[handoff(spanish_agent), handoff(english_agent)],
+  output_type=StructuredAnswer,
+)
+
+config = AgentRunConfig(run_name="multilingual_weather_run")
+output = await AgentRunner.run(
+  triage_agent, 
+  ["Hola, ¿qué tiempo hace en Madrid?"], 
+  run_config=config
+)
+
+print(output.agent_output)
+# => StructuredAnswer(decision='Spanish agent used', reasoning='Detected Spanish phrase')
+Another Comprehensive Snippet
+from agents import Agent, AgentRunner, handoff
+from agents.tool import function_tool
+from pydantic import BaseModel
+
+class WeatherResponse(BaseModel):
+    location: str
+    forecast: str
+
+@function_tool
+def get_forecast(city: str) -> str:
+    return f"{city} is sunny."
+
+spanish_agent = Agent(name="spanish_agent", instructions="Respond only in Spanish.")
+english_agent = Agent(name="english_agent", instructions="Respond only in English.")
+
+triage_agent = Agent(
+    name="triage_agent",
+    instructions="Use language detection to hand off appropriately.",
+    tools=[get_forecast],
+    handoffs=[handoff(spanish_agent), handoff(english_agent)],
+    output_type=WeatherResponse,
+)
+
+config = AgentRunConfig(run_name="weather_check")
+output = await AgentRunner.run(
+    triage_agent,
+    ["Hola, clima en Madrid?"],
+    run_config=config
+)
+
+print(output.agent_output)
+# WeatherResponse(location='Madrid', forecast='Madrid is sunny.')
+Best Practices
+Document function schemas carefully so the LLM knows how to call each tool.
+Use strict schema checking (e.g., a Pydantic model) to avoid partial or malformed arguments.
+Apply guardrails that make sense for your domain—like content filters, usage quotas, or data validation.
+For complex multi-step flows, trace thoroughly. The debug logs or custom trace processors can be a lifesaver.
+Consider employing handoffs for specialized sub-agents if your application covers multiple domains or languages.
+Next Steps
+Check out our examples folder for reference use cases:
+Chat Agent: A typical QA or chat-based helper with some tools.
+Multi-step reasoning: Agents that iterate with multiple tools.
+Handoff: Triage to specialized sub-agents.
+Guardrail usage: Implementing custom policy checks.
+Tracing advanced usage: Fine-tuning trace storage or disabling it.
+Read docstrings in the code for deeper details.
+That’s the OpenAI Agents SDK in depth:
+
+Agents define LLM personalities and capabilities (tools, handoffs, guardrails).
+Tools provide external functionality for the LLM to call.
+Context shares data between steps.
+Output Types ensure you get structured or free-form outputs as needed.
+Handoffs allow delegation to specialized agents.
+Streaming provides incremental output events.
+Tracing records everything for debug/analytics.
+Guardrails keep everything within policy or usage limits.
+Happy building with the Agents SDK!
+
+Was this page useful?
+Overview

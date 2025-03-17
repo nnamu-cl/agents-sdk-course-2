@@ -1,0 +1,55 @@
+From: john.doe@example.com
+To: jane.smith@example.com
+Cc: team@example.com
+Subject: Quarterly Project Update - Q2 2023
+Date: Mon, 15 May 2023 09:45:32 -0700
+Message-ID: <CAE9z7DrJBF8Kj2@mail.example.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundary123456"
+
+--boundary123456
+Content-Type: text/plain; charset="UTF-8"
+
+Dear Jane,
+
+I hope this email finds you well. I'm writing to provide you with our quarterly project update for Q2 2023.
+
+Key accomplishments:
+1. Successfully completed the initial phase of the AI integration
+2. Reduced system response time by 35%
+3. Onboarded 3 new team members
+
+Challenges we're facing:
+- Budget constraints for the server upgrade
+- Timeline adjustments due to third-party API changes
+
+For the next quarter, we plan to focus on:
+* Implementing the feedback system
+* Finalizing the mobile application
+* Beginning user acceptance testing
+
+Please review the attached documents for detailed metrics and the updated project timeline. I've also included the presentation slides from our last stakeholder meeting.
+
+Let's schedule a call next week to discuss any questions or concerns you might have.
+
+Best regards,
+John Doe
+Project Manager
+Example Corp
+Tel: (555) 123-4567
+
+--boundary123456
+Content-Type: application/pdf; name="Q2_2023_Project_Report.pdf"
+Content-Disposition: attachment; filename="Q2_2023_Project_Report.pdf"
+Content-Transfer-Encoding: base64
+
+[Base64 encoded content would appear here]
+
+--boundary123456
+Content-Type: application/vnd.ms-excel; name="Project_Metrics.xlsx"
+Content-Disposition: attachment; filename="Project_Metrics.xlsx"
+Content-Transfer-Encoding: base64
+
+[Base64 encoded content would appear here]
+
+--boundary123456-- 

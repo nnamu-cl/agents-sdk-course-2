@@ -1,0 +1,114 @@
+{
+    "emails": {
+      "1": {
+        "id": "524a45da-7e2b-4b2e-bda0-5bffb2bece6c",
+        "sender": "newsletter@linkedin.com", 
+        "recipient": "user@example.com",
+        "subject": "Weekly Job Matches: 15 New Positions in Your Area",
+        "body": "Hello,\n\nBased on your profile and preferences, we've found 15 new job opportunities that might interest you:\n\n- Senior Software Developer at TechCorp\n- UX Designer at Creative Solutions\n- Project Manager at Global Innovations\n\nLog in to your LinkedIn account to view all matches and apply.\n\nBest regards,\nThe LinkedIn Team\n\nTo unsubscribe from these notifications, visit your notification settings.",
+        "timestamp": "2025-03-16T09:24:30.333915",
+        "is_read": false,
+        "folder": "inbox",
+        "attachments": []
+      },
+      "2": {
+        "id": "07020ec7-d91c-409f-94c3-55aae24b445c",
+        "sender": "billing@netflix.com",
+        "recipient": "user@example.com", 
+        "subject": "Your Netflix Subscription Receipt",
+        "body": "Dear Valued Customer,\n\nThank you for your continued subscription to Netflix. We've processed your monthly payment of $15.99 for the Premium plan.\n\nBilling Period: March 15, 2025 - April 14, 2025\nPlan: Premium (4K Ultra HD + 4 screens)\nAmount: $15.99\nPayment Method: Visa ending in 4832\n\nYou can view your billing details by signing into your account at netflix.com/youraccount.\n\nEnjoy watching!\n\nThe Netflix Team",
+        "timestamp": "2025-03-15T03:12:30.333953",
+        "is_read": false,
+        "folder": "inbox",
+        "attachments": ["receipt_march2025.pdf"]
+      },
+      "3": {
+        "id": "87715879-6946-425d-9127-2a4aed473fcd",
+        "sender": "user@example.com",
+        "recipient": "support@airbnb.com",
+        "subject": "Issue with Reservation #RT78901",
+        "body": "Hello Airbnb Support,\n\nI'm writing regarding my upcoming reservation (#RT78901) for March 25-30 in Chicago.\n\nThe host has messaged me stating that there might be construction noise during my stay, which wasn't mentioned in the listing when I booked. Given that I'm traveling for a conference and need a quiet space for preparation, this is concerning.\n\nIs it possible to get assistance with either:\n1. Finding a comparable alternative in the same area\n2. Getting a refund so I can book elsewhere\n\nI appreciate your help with this matter.\n\nBest regards,\n[Your Name]",
+        "timestamp": "2025-03-14T15:47:22.333966",
+        "is_read": false,
+        "folder": "sent",
+        "attachments": ["screenshot_conversation.png"]
+      },
+      "4": {
+        "id": "3f8e3acc-e40c-4bef-99c3-20d2318d227e",
+        "sender": "alex.martinez@workteam.com",
+        "recipient": "user@example.com",
+        "subject": "Meeting Notes: Q1 Strategy Session",
+        "body": "Hi Team,\n\nAttached are the notes and action items from yesterday's Q1 strategy session. Please review and confirm your assigned tasks by EOD Friday.\n\nKey points:\n- Sales target increased by 12% for Q2\n- New product launch postponed to June 15\n- Marketing budget approved for social media campaign\n\nOur next follow-up meeting is scheduled for March 28 at 2:00 PM in Conference Room A.\n\nLet me know if you have any questions.\n\nBest,\nAlex Martinez\nProject Manager",
+        "timestamp": "2025-03-13T10:35:28.144313",
+        "is_read": false,
+        "folder": "inbox",
+        "attachments": ["q1_strategy_notes.docx", "q2_roadmap.pdf"]
+      },
+      "5": {
+        "id": "65ea7ec1-399f-409f-9f3d-ace1e0f38615",
+        "sender": "user@example.com",
+        "recipient": "david.wong@example.com",
+        "subject": "Lunch Next Tuesday?",
+        "body": "Hey David,\n\nHope you're doing well! I was wondering if you'd be free for lunch next Tuesday around 12:30? There's a new Thai place that opened up near the office that I've been wanting to try.\n\nLet me know if that works for you, or if another day would be better.\n\nCheers,\n[Your Name]",
+        "timestamp": "2025-03-13T08:12:59.959552",
+        "is_read": false,
+        "folder": "sent",
+        "attachments": []
+      },
+      "6": {
+        "id": "b2c9a4e5-f71d-42b8-8a7c-938d2c0e9f1a",
+        "sender": "donotreply@amazon.com",
+        "recipient": "user@example.com",
+        "subject": "Your Amazon.com order #112-5987423-4891227 has shipped",
+        "body": "Hello,\n\nYour package with the following items has shipped:\n\n1x Wireless Bluetooth Headphones - $79.99\n1x USB-C Fast Charging Cable (2-Pack) - $12.99\n\nTracking number: 1Z9999W99999999999\nCarrier: UPS\nEstimated delivery: Tuesday, March 18, 2025\n\nYou can track your package at: https://www.amazon.com/track\n\nThank you for shopping with Amazon!\n\nNote: This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.",
+        "timestamp": "2025-03-12T14:05:33.123456",
+        "is_read": false,
+        "folder": "inbox",
+        "attachments": []
+      },
+      "7": {
+        "id": "f4e8d9c2-a1b2-4c3d-9e8f-7g6h5i4j3k2l",
+        "sender": "user@example.com",
+        "recipient": "sarah.johnson@example.com",
+        "subject": "FW: Conference Registration Confirmation",
+        "body": "Hi Sarah,\n\nFYI - I've registered for the Tech Innovation Summit in May. I think it would be valuable for you to attend as well, especially for the AI and machine learning sessions.\n\nRegistration details are in the forwarded email below. Early bird pricing ends on March 25th.\n\nLet me know what you think.\n\nRegards,\n[Your Name]\n\n---------- Forwarded message ----------\nFrom: events@techinnovationsummit.com\nDate: March 10, 2025\nSubject: Conference Registration Confirmation\n\nThank you for registering for the 2025 Tech Innovation Summit, May 15-17 at the Grand Convention Center.\n\nAttendee: [Your Name]\nRegistration ID: TIS-2025-78945\nRegistration Type: Full Conference Pass\nAmount Paid: $899.00\n",
+        "timestamp": "2025-03-11T11:43:27.654321",
+        "is_read": false,
+        "folder": "sent",
+        "attachments": []
+      },
+      "8": {
+        "id": "1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p",
+        "sender": "security@paypal.com",
+        "recipient": "user@example.com",
+        "subject": "Security Alert: New Device Login",
+        "body": "Dear Customer,\n\nWe detected a login to your PayPal account from a device we don't recognize:\n\nDevice: Windows PC\nLocation: Boston, MA, USA\nDate and Time: March 9, 2025, 7:42 PM EST\nIP Address: 198.51.100.xxx\n\nIf this was you, you can ignore this message.\n\nIf you don't recognize this activity, please secure your account immediately by:\n1. Changing your password\n2. Enabling two-factor authentication\n3. Contacting PayPal customer service\n\nProtect your account: https://www.paypal.com/security\n\nSincerely,\nPayPal Security Team",
+        "timestamp": "2025-03-09T19:50:12.987654",
+        "is_read": false,
+        "folder": "inbox",
+        "attachments": []
+      },
+      "9": {
+        "id": "9z8y7x6w-5v4u-3t2s-1r0q-9p8o7n6m5l4k",
+        "sender": "reservations@marriott.com",
+        "recipient": "user@example.com",
+        "subject": "Your Upcoming Stay at Chicago Marriott Downtown",
+        "body": "Dear Valued Member,\n\nThank you for choosing Marriott for your upcoming stay. We're looking forward to welcoming you to Chicago Marriott Downtown.\n\nReservation Details:\nConfirmation Number: MC87654321\nCheck-in: Friday, March 25, 2025 (after 3:00 PM)\nCheck-out: Wednesday, March 30, 2025 (before 11:00 AM)\nRoom Type: King Bed, City View\nGuests: 1\n\nSpecial Requests: High floor, away from elevator\n\nAs a Marriott Bonvoy Gold Elite member, you'll enjoy:\n- Enhanced Internet Access\n- 2:00 PM Late Checkout (subject to availability)\n- Welcome Points Bonus\n\nPlease let us know if you need assistance with transportation from the airport or have any special requirements for your stay.\n\nWe look forward to your arrival!\n\nBest regards,\nChicago Marriott Downtown Team",
+        "timestamp": "2025-03-08T08:15:44.123789",
+        "is_read": false,
+        "folder": "inbox",
+        "attachments": ["reservation_details.pdf"]
+      },
+      "10": {
+        "id": "5q4w3e2r-1t6y-7u8i-9o0p-1a2s3d4f5g6h",
+        "sender": "user@example.com",
+        "recipient": "michael.chen@example.com",
+        "subject": "Quarterly Report Draft for Review",
+        "body": "Hi Michael,\n\nAttached is the first draft of the Q1 financial report for your review. I've highlighted a few areas in yellow where we might need additional data or clarification.\n\nThe executive summary still needs work, but I wanted to get your feedback on the overall structure and analysis before finalizing it.\n\nKey points to review:\n1. The unexpected increase in operational costs (page 4)\n2. Performance comparison against projections (page 7)\n3. Recommendations section (pages 12-13)\n\nCould you please provide your feedback by Friday? I'd like to distribute the final version to the board by next Monday.\n\nThanks,\n[Your Name]",
+        "timestamp": "2025-03-07T16:22:38.456789",
+        "is_read": false,
+        "folder": "sent",
+        "attachments": ["Q1_2025_Financial_Report_DRAFT.xlsx", "Supporting_Charts.pptx"]
+      }
+    }
+  }
